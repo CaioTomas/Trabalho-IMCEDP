@@ -123,39 +123,177 @@
 \begin{document}
 
 \title{
-Problemas de Sturm-Liouville unidimensionais: 
-uma abordagem numérica usando o método do tiro
+  Equação do calor e o problema da adega
 }
 \author{Caio Tomás de Paula}
 \affiliation{Departamento de Matemática, Universidade de Brasília, Brasil.}
 %
 \begin{abstract}
     Relatório entregue como parte do trabalho final do curso de Introdução a
-    Métodos Computacionais em Equações Diferenciais Ordinárias (IMCEDO) do
+    Métodos Computacionais em Equações Diferenciais Parciais (IMCEDP) do
     Programa de Pós-Graduação em Matemática (PPGMAT),
-    ministrado pelo prof. Dr. Yuri Dumaresq Sobral no segundo semestre letivo
-    de 2022 da Universidade de Brasília.
-    O objetivo do trabalho foi resolver, numericamente, problemas de Sturm-Liouville,
-    lançando mão do método do tiro. Dois problemas regulares e dois problemas singulares
-    são resolvidos e a robustez do método é testada.
-    Um dos problemas singulares trata de uma aplicação do método
-    para resolver o problema de uma corda pendurada, investigado pela primeira vez por Daniel Bernoulli
-    em 1732.
-    Foi utilizada 
-    \cite{Sturm-Liouville} como referência principal para o trabalho, além
-    das notas de aula \cite{notas-aula-IMCEDO} e do livro \cite{iserles2008}.
+    ministrado pelo prof. Dr.~Yuri Dumaresq Sobral no segundo semestre letivo
+    de 2023 da Universidade de Brasília.
+    O objetivo do trabalho foi resolver, numericamente, a equação do calor.
+    Foi utilizada~\cite{Sturm-Liouville} como referência principal para o trabalho, além
+    do livro~\cite{iserles2008}.
 \end{abstract}
 %
 \maketitle
 %
 \section{Introdução}
 %
+	Estamos interessados em estudar a variação da temperatura do solo terrestre a uma dada
+	profundidade $x$ no instante $t$. Desconsiderando a curvatura da terra e a variação diária
+	de temperatura da superfície, podemos modelar a distribuição de temperatura $u(x,t)$ à
+	profundidade $x$ no tempo $t$ por uma equação do calor unidimensional:
+	%
+	\begin{equation*}
+		u_t = \kappa u_{xx}.
+	\end{equation*}
+	%
+	A difusividade térmica do solo terrestre será considerada $\kappa = 6.3\text{m}^2/\text{ano}$.
+	Note que estamos desconsiderando o calor oriundo do núcleo da Terra, já que não há forçamento
+	na equação. Vamos assumir que $u \xrightarrow{x\to\infty} 0$. Vamos também assumir que
+	a temperatura $f(t)$ na superfície ($x = 0$) assume apenas dois valores: uma temperatura
+	de ``verão'' durante metade do ano e uma temperatura de ``inverno'' durante a outra metade.
+	Esse padrão se repete todo ano, i.e., a temperatura é periódica em $x=0$ com período de 1 ano.
 
+	Em símbolos,
+	%
+	\begin{equation*}
+		f(t) = \begin{cases}
+			T_s, \ 0 \leq t < 1/2 \\
+			T_w, \ 1/2 \leq t \leq 1,
+		\end{cases}
+	\end{equation*}
+	%
+	onde $T_s$ denota a temperatura no verão e $T_w$ denota a temperatura no inverno, com $t$ em anos.
+
+	Vamos tomar a condição inicial $u(x,0) = f(t)\e^{-q_1x}$, com $q_1 = 0.71\text{m}^{-1}$.
+	Por fim, vamos tomar $u(L,t) = 0$, com $L$ suficientemente longo para que essa condição seja
+	válida.
+
+	Em resumo, queremos resolver o PVIC
+	%
+	\begin{equation*}
+		\begin{cases}
+			u_t = \kappa u_{xx}, \ 0 \leq x \leq L, t\geq 0 \\
+			u(x,0) = f(t)\e^{-q_1x} \\
+			u(0,t) = f(t) \\
+			u(L,t) = 0
+		\end{cases}
+	\end{equation*}
+	%
+
+	Queremos resolver este problema numericamente e responder a algumas perguntas.
+	Mais especificamente, vamos resolver este problema usando tanto o método de Euler
+	explícito (e mostrar sua ordem) quanto o método de Crank-Nicolson, encontrar
+	a profundidade ideal para uma adega de vinhos e resolver uma variação
+	do problema com difusividade variável.
+
+	Antes de partir para a solução numérica, vamos fazer algumas considerações sobre
+	a solução analítica do problema. Primeiro, note que podemos escrever
+	%
+	\begin{equation}
+		f(t) = \sum_{n=-\infty}^{\infty} c_n \e^{2\pi int/T},
+	\end{equation}
+	%
+	com $C_n\in\mathbb{C}$ tais que $\overline{C_n} = C_{-n}$ e $T = 1$ ano.
+	É possível mostrar\footnote{p.129 livro do problema} que, em um tempo $t$,
+	uma substância se difunde aproximadamente $\sqrt{\kappa t}$ unidades.
+	Sendo assim, na escala de tempo de interesse (1 ano), temos
+	%
+	\begin{equation}
+		\sqrt{\kappa T} = \sqrt{6.3} \approx 2.5\text{ m}.
+	\end{equation}
+	%
+	Vamos tomar o \textit{ansatz}
+	%
+	\begin{equation}
+		u(x,t) = \sum_{n=-\infty}^{\infty} C_n \omega_n(x) \e^{2\pi int/T},
+	\end{equation}
+	%
+	com $C_n\in\mathbb{C}$ tais que $\overline{C_n} = C_{-n}$, de modo que $u$ é real.
+	Vamos impor as seguintes condições:
+	%
+	\begin{itemize}[(i)]
+		\item cada uma das parcelas satisfaz a equação do calor
+		\item $\omega_n(0) \equiv 1$, de modo que a representação de $f(t)$ seja recuperada
+		\item $\omega_n(x)$ é limitado e tende a 0 quando $x\to\infty$ ($n\neq 0$),
+		uma vez que a temperatura a profundidades muito grandes não é sensível a variações
+		de temperatura na superfície.
+	\end{itemize}
+	%
+	A condição (i) nos dá
+	%
+	\begin{equation}
+		\frac{\diff^2\omega_n}{\diff x^2} = p^{2}_n\omega_n, \ p^{2}_n = \frac{2\pi i n}{\kappa T}.
+	\end{equation}
+	%
+	Consequentemente,
+	%
+	\begin{equation}
+		p_n = \pm(1 \pm i)q_n, \ \text{ com } \ q_n = \sqrt{ \frac{|n|\pi}{\kappa T} } > 0
+	\end{equation}
+	%
+	e o sinal $\pm$ depende do sinal de $n$. Desta forma, a solução geral da EDO de $\omega_n$
+	é dada por
+	%
+	\begin{equation}
+		\omega_n(x) = A_n\e^{(1 \pm i)q_n x} + B_n\e^{-(1 \pm i)q_n x}.
+	\end{equation}
+	%
+	Da condição (iii) segue que $A_n \equiv 0$ e da condição (ii) segue que
+	$B_n \equiv 1$. Portanto, obtemos
+	%
+	\begin{equation}
+		\omega_n(x) = \e^{-(1 \pm i)q_n x}
+	\end{equation}
+	%
+	e, assim,
+	%
+	\begin{equation}
+		u(x,t) = \sum_{n=-\infty}^{\infty} C_n \e^{-(1 \pm i)q_n x} \e^{2\pi int/T}.
+	\end{equation}
+	%
+	Escrevendo $C_n = |C_n|\e^{-i\gamma_n}$, segue que
+	%
+	\begin{equation}
+		u(x,t) = C_0 + 2\sum_{n=1}^{\infty} |C_n| \e^{-q_n x}\cos\left( \frac{2\pi nt}{T} + \gamma_n - q_n x \right).
+	\end{equation}
+	%
+	Vamos interpretar esta solução. Note que o termo do cosseno representa uma onda de frequência
+	$2\pi n/T$ e número de onda $q_n$. Por conta disto, a $n$-ésima ``onda parcial'' se propaga
+	com velocidade
+	%
+	\begin{equation}
+		\frac{2\pi n}{q_n T} = \sqrt{ \frac{ 4\pi\kappa|n| }{T} }.
+	\end{equation}
+	%
+	Como há um amortecimento exponencial na direção de propagação e este amortecimento
+	cresce com $\sqrt{|n|}$, segue que a contribuição mais importante para a solução
+	vem do termo com $n=1$. Para os valores numéricos que estamos considerando,
+	segue que
+	%
+	\begin{equation}
+		q_1 = \frac{1}{2\pi}\sqrt{\frac{4\pi\kappa}{T}} \approx 0.71\text{m}^{-1}.
+	\end{equation}
+	%
+	Agora, note que o ponto $x_1$ tal que $q_1x_1 = \pi$ é tal que a temperatura
+	$u(x_1,t)$ é oposta em fase à temperatura $u(0,t)$. Dito de outro modo,
+	$x_1 = \pi/q_1 \approx 4.4$m é a profundidade na qual a temperatura do solo
+	tem fase oposta à temperatura da superfície. Isto significa que se na superfície
+	a temperatura é de verão então à profundidade $x_1$ a temperatura é de inverno.
+	Além disso, a variação de temperatura é $\e^{-\pi} \approx 4\%$ da variação na superfície.
+	Isto torna esta profundidade ideal para uma adega de vinhos!
 
 %
 \section{Códigos utilizados}
 %
-Os códigos escritos para este projeto podem ser encontrados 
-\href{https://github.com/CaioTomas/Trabalho-final----IMCEDO}{neste link}.
+	Este projeto pode ser encontrado
+	\href{https://github.com/CaioTomas/Trabalho-IMCEDP}{neste link},
+	incluindo os códigos utilizados para o cômputo da solução e o código-fonte
+	deste documento.
 
 \end{document}

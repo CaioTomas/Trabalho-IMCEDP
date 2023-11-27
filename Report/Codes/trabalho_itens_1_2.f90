@@ -3,13 +3,13 @@ program trabalho_itens_1_2
     implicit none
 
     double precision, dimension(:,:), allocatable :: u
-    double precision :: mu, dx, dt, q1
+    double precision :: mu, dx, dt, q1, kappa, length
     integer :: l, n, d, Nfim
 
     mu = 0.5d0
 
-    dx = (1.d0/2.d0)**4
-    d = int(10.d0/dx) - 1
+    dx = (1.d0/2.d0)**5
+    d = int(1.d0/dx) - 1
 
     dt = mu * dx * dx
     Nfim = int(1.d0/dt)
@@ -19,6 +19,8 @@ program trabalho_itens_1_2
     allocate(u(0:d+1, 0:Nfim))
 
     q1 = 0.71d0
+    kappa = 6.3d0
+    length = kappa
 
     !! initial condition
     do l = 0,d+1
@@ -40,7 +42,7 @@ program trabalho_itens_1_2
 
     do n = 0,Nfim
         do l = 0,d+1
-            write(123,*) n, l*dx, u(l,n)
+            write(123,*) n, l*dx, u(l,n), length*l*dx, length*length*n*dt/kappa
         end do
         write(123,*) '   ' !! empty line between blocks for gnuplot plotting
     end do
