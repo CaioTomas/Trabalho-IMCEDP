@@ -69,9 +69,9 @@ contains
         double precision :: t, f
 
         if ( (t.ge.0d0).and.(t.le.0.5d0) ) then
-			f = 10 !! winter temperature
+			f = 1 !! winter temperature
 		else
-			f = 30 !! summer temperature
+			f = 10 !! summer temperature
 		end if
 
         return

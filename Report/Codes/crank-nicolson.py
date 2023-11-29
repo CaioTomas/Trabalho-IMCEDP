@@ -2,8 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-#! CORRIGIR FUNÇÕES E MOMENTO DE APLICAÇÃO DAS CCs
-
 # Parameters
 k = 6.3  # Thermal diffusivity (m^2/year)
 L = 15.0  # Length of the rod (m)
@@ -16,9 +14,9 @@ dt = T / Nt  # Time step size
 # Initial condition function
 def f(t):
     if (0 <= t <= 0.5) or (1 < t <= 1.5):
-        f = 10
+        f = 1
     elif (0.5 < t <= 1) or (1.5 < t <= 2):
-        f = 30
+        f = 10
     return f
 
 # Boundary condition functions
@@ -71,7 +69,7 @@ plt.legend()
 plt.grid(True)
 
 # Set y-axis range
-ax.set_ylim(0, 30)
+ax.set_ylim(0, 10)
 
 # Vertical line at x = 4.4
 ax.axvline(x=4.4, color='red', linestyle='--', label='x = 4.4')
