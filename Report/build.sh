@@ -31,5 +31,5 @@ rm          $1.run.xml
 rm          $1.toc
 
 #	Etapa 3: abre o pdf e limpa o terminal
-open        $1.pdf
+# open        $1.pdf
 clear -x

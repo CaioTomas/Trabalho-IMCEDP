@@ -26,6 +26,10 @@
   nofootinbib,aps,superscriptaddress,%
   eqsecnum,prd,notitlepage,showkeys,10pt]{revtex4-1}
 
+% \usepackage{biblatex}
+% \addbibresource{Report/referencias.bib}
+% \addbibresource{Report/mainNotes.bib}
+
 \usepackage[portuguese]{babel}
 \usepackage[shortlabels]{enumitem}
 \usepackage[utf8]{inputenc}
@@ -200,7 +204,7 @@
 	\end{equation}
 	%
 	com $C_n\in\mathbb{C}$ tais que $\overline{C_n} = C_{-n}$ e $T = 1$ ano.
-	É possível mostrar\footnote{p.129 livro do problema} que, em um tempo $t$,
+	É possível mostrar\footnote{~\cite[p.~129]{lin1998}} que, em um tempo $t$,
 	uma substância se difunde aproximadamente $\sqrt{\kappa t}$ unidades.
 	Sendo assim, na escala de tempo de interesse (1 ano), temos
 	%
@@ -288,6 +292,32 @@
 	Além disso, a variação de temperatura é $\e^{-\pi} \approx 4\%$ da variação na superfície.
 	Isto torna esta profundidade ideal para uma adega de vinhos!
 
+
+	%
+	\section{Métodos numéricos}
+	%
+
+		Começamos resolvendo a equação com o método de Euler explícito, que converge
+		para $\kappa\mu \leq 1/2$. Por conta desta restrição ao número de Courant,
+		não podemos escolher $\Delta t$ e $\Delta x$ de forma displicente.
+
+		Também utilizamos o método de Crank-Nicolson para resolver o problema.
+		Este método, dado por
+		%
+		\begin{equation}
+			\label{eq:crank-nicolson}
+			-\alpha u^{n+1}_{\ell + 1} + (1 + 2\alpha)u^{n+1}_{\ell} - \alpha u^{n+1}_{\ell - 1}
+			= \alpha u^{n}_{\ell + 1} + (1 - 2\alpha)u^{n}_{\ell} + \alpha u^{n}_{\ell - 1}
+		\end{equation}
+		%
+		com $\alpha = \kappa\mu/2$ é implícito, incondicionalmente estável e consistente
+		(logo convergente pelo Teorema de Equivalência de Lax).
+		Consequentemente, temos maior liberdade na escolha de $\Delta t$ e $\Delta x$, o que torna
+		este método mais indicado para o cômputo da solução por grandes intervalos de tempo.
+		A implicitude do método nos obriga a resolver um sistema linear a cada iteração.
+		Para tanto, usamos o \href{https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm}{algoritmo da matriz tridiagonal}
+		(ou de Thomas) para resolver o sistema.
+
 %
 \section{Códigos utilizados}
 %
@@ -295,5 +325,9 @@
 	\href{https://github.com/CaioTomas/Trabalho-IMCEDP}{neste link},
 	incluindo os códigos utilizados para o cômputo da solução e o código-fonte
 	deste documento.
+
+
+% \printbibliography
+\bibliography{Report/referencias}
 
 \end{document}

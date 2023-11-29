@@ -3,20 +3,29 @@ program trabalho_itens_1_2
     implicit none
 
     double precision, dimension(:,:), allocatable :: u
-    double precision :: mu, dx, dt, q1, kappa, length
+    double precision :: mu, dx, dt, q1, kappa, length, T
     integer :: l, n, d, Nfim
 
-    mu = 0.5d0
-    
+    ! mu = 0.5d0
+
     q1 = 0.71d0
     kappa = 6.3d0
     length = kappa**0.5d0
 
-    dx = (1.d0/2.d0)**5
-    d = int(10.d0/(length*dx)) - 1
+    ! dx = (1.d0/2.d0)**5
+    ! d = int(10.d0/(length*dx)) - 1
 
-    dt = mu * dx * dx
-    Nfim = int(1.d0/dt)
+    ! dt = mu * dx * dx
+    ! Nfim = int(1.d0/dt)
+
+    length = 15.d0  ! Length of the rod (m)
+    T = 1.d0  ! Total time (years)
+    d = 150  ! Number of spatial points
+    Nfim = 1260  ! Number of time steps
+    dx = length / d  ! Spatial step size
+    dt = T / Nfim  ! Time step size
+
+    mu = dt / (dx * dx)
 
     write(*,*) d, dx, Nfim, dt
 
@@ -34,7 +43,7 @@ program trabalho_itens_1_2
         u(d+1,n+1) = p2((n+1) * dt) !! right boundary condition
 
         do l = 1,d
-            u(l,n+1) = u(l,n) + mu*( u(l+1,n) - 2.d0*u(l,n) + u(l-1,n) )
+            u(l,n+1) = u(l,n) + kappa*mu*( u(l+1,n) - 2.d0*u(l,n) + u(l-1,n) )
         end do
     end do
 
@@ -42,7 +51,7 @@ program trabalho_itens_1_2
 
     do n = 0,Nfim
         do l = 0,d+1
-            write(123,*) n, l*dx, u(l,n), length*l*dx, length*length*n*dt/kappa
+            write(123,*) n, l*dx, u(l,n)
         end do
         write(123,*) '   ' !! empty line between blocks for gnuplot plotting
     end do
@@ -60,9 +69,9 @@ contains
         double precision :: t, f
 
         if ( (t.ge.0d0).and.(t.le.0.5d0) ) then
-			f = -1 !! winter temperature
+			f = 10 !! winter temperature
 		else
-			f = 1 !! summer temperature
+			f = 30 !! summer temperature
 		end if
 
         return
