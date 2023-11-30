@@ -320,19 +320,71 @@
 	(logo convergente pelo Teorema de Equivalência de Lax).
 	Consequentemente, temos maior liberdade na escolha de $\Delta t$ e $\Delta x$, o que torna
 	este método mais indicado para o cômputo da solução por grandes intervalos de tempo.
-	A implicitude do método nos obriga a resolver um sistema linear a cada iteração.
-	Para tanto, usamos o \href{https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm}{algoritmo da matriz tridiagonal}
-	(ou de Thomas) para resolver o sistema.
+	A implicitude do método nos obriga a resolver um sistema linear a cada iteração,
+	dado por
+	\begin{equation}
+		\begin{bmatrix}
+			1 + 2\alpha & -\alpha & 0 & \cdots & 0 \\
+			-\alpha & 1 + 2\alpha & -\alpha & \ddots & \vdots \\
+			0 & -\alpha & 1 + 2\alpha & \ddots & 0 \\
+			\vdots & \ddots & \ddots & \ddots & -\alpha \\
+			0 & \cdots & 0 & -\alpha & 1 + 2\alpha
+		\end{bmatrix}
+		\begin{bmatrix}
+			u_1 \\
+			u_2 \\
+			u_3 \\
+			\vdots \\
+			u_{N-1} \\
+			u_N
+		\end{bmatrix}
+		=
+		\begin{bmatrix}
+			b_1 \\
+			b_2 \\
+			b_3 \\
+			\vdots \\
+			b_{N-1} \\
+			b_N
+		\end{bmatrix},
+	\end{equation}
+	sendo $N$ a quantidade de pontos na malha espacial.
+	Para resolver tal sistema, usamos o \href{https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm}{algoritmo da matriz tridiagonal}
+	(ou de Thomas).
 %
 \section{Resultados}
 %
 	blablabla
 
 	figura da solução em diferentes timesteps com Euler explícito (linkar animação)
+	%
+	\begin{figure}[t]%
+		\label{fig:exp-euler}
+		\includegraphics[width=.5\textwidth]{Codes/exp-euler.pdf}
+		\caption{Perfil de temperatura para diferentes instantes de tempo calculado usando
+		o método de Euler explícito. A reta pontilhada
+		vermelha representa a profundidade $x = 4.4$m, enquanto a reta pontilhada verde
+		representa a temperatura $y=1$. O perfil de temperatura ao final de 1 ano (curva roxa)
+		passa pelo encontro entre as duas retas pontilhadas, mostrando que à profundidade
+		de $4.4$m a temperatura tem fase oposta à da superfície.}
+	\end{figure}
+	%
 
 	plot da ordem
 
 	figura da solução em diferentes timesteps com Crank-Nicolson (linkar animação)
+	%
+	\begin{figure}[b]%
+		\label{fig:crank-nicolson}
+		\includegraphics[width=.5\textwidth]{Codes/crank-nicolson.pdf}
+		\caption{Perfil de temperatura para diferentes instantes de tempo calculado usando
+		o método de Crank-Nicolson. A reta pontilhada
+		vermelha representa a profundidade $x = 4.4$m, enquanto a reta pontilhada verde
+		representa a temperatura $y=1$. O perfil de temperatura ao final de 1 ano (curva roxa)
+		passa pelo encontro entre as duas retas pontilhadas, mostrando que à profundidade
+		de $4.4$m a temperatura tem fase oposta à da superfície.}
+	\end{figure}
+	%
 
 
 
