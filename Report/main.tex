@@ -370,11 +370,18 @@
 	\end{figure}
 	%
 
-	plot da ordem
+	plot da ordem (referência $(t_r, x_r) = (1 \text{ ano}, 5 \text{ m})$)
+	%
+	\begin{figure}[b]%
+		\label{fig:ordem-exp-euler}
+		\includegraphics[width=.5\textwidth]{Codes/ordem-exp-euler.pdf}
+		\caption{Validação da ordem do método de Euler explícito. Fit da forma $f(x) = ax^2$. Erro encontrado de $0.8727\%$.}
+	\end{figure}
+	%
 
 	figura da solução em diferentes timesteps com Crank-Nicolson (linkar animação)
 	%
-	\begin{figure}[b]%
+	\begin{figure}[t]%
 		\label{fig:crank-nicolson}
 		\includegraphics[width=.5\textwidth]{Codes/crank-nicolson.pdf}
 		\caption{Perfil de temperatura para diferentes instantes de tempo calculado usando
