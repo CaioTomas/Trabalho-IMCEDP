@@ -152,9 +152,9 @@
 	de temperatura da superfície, podemos modelar a distribuição de temperatura $u(x,t)$ à
 	profundidade $x$ no tempo $t$ por uma equação do calor unidimensional:
 	%
-	\begin{equation*}
+	\begin{equation}
 		u_t = \kappa u_{xx}.
-	\end{equation*}
+	\end{equation}
 	%
 	A difusividade térmica do solo terrestre será considerada $\kappa = 6.3\text{m}^2/\text{ano}$.
 	Note que estamos desconsiderando o calor oriundo do núcleo da Terra, já que não há forçamento
@@ -165,12 +165,12 @@
 
 	Em símbolos,
 	%
-	\begin{equation*}
+	\begin{equation}
 		f(t) = \begin{cases}
-			T_s, \ 0 \leq t < 1/2 \\
-			T_w, \ 1/2 \leq t \leq 1,
+			T_w, \ 0 \leq t < 1/2 \\
+			T_s, \ 1/2 \leq t \leq 1,
 		\end{cases}
-	\end{equation*}
+	\end{equation}
 	%
 	onde $T_s$ denota a temperatura no verão e $T_w$ denota a temperatura no inverno, com $t$ em anos.
 
@@ -180,14 +180,14 @@
 
 	Em resumo, queremos resolver o PVIC
 	%
-	\begin{equation*}
+	\begin{equation}
 		\begin{cases}
 			u_t = \kappa u_{xx}, \ 0 \leq x \leq L, t\geq 0 \\
 			u(x,0) = f(t)\e^{-q_1x} \\
 			u(0,t) = f(t) \\
 			u(L,t) = 0
 		\end{cases}
-	\end{equation*}
+	\end{equation}
 	%
 
 	Queremos resolver este problema numericamente e responder a algumas perguntas.
