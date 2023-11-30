@@ -28,6 +28,13 @@ def initial_condition(t, x):
 def right_boundary_condition(t, x):
     return np.zeros_like(x)
 
+# função para fazer a animação
+def update(frame):
+    line.set_ydata(frames[frame])
+    time = (frame + 1) * dt  # Calculate current time
+    timer_text.set_text(f't = {time:.2f} anos')
+    return line, timer_text
+
 # criação da malha espacial
 x_values = np.linspace(0, L, Nx+1)
 
@@ -49,13 +56,16 @@ for n in range(Nt):
     for i in range(1, Nx):
         u_new[i] = u[i] + k * dt * (u[i+1] - 2 * u[i] + u[i-1]) / (dx**2)
     
+    # salvando a solução para fazer a animação
     u = u_new.copy()
     frames.append(u.copy())
     
+    # salvando a solução para fazer a figura
     if (n * dt) in specific_times:
         print(n*dt)
         specific_frames.append(u.copy())
 
+# append para pegar a última iteração temporar (t=1)
 specific_frames.append(u.copy())
 
 # criando a animação
@@ -73,12 +83,6 @@ ax.axvline(x=4.4, color='red', linestyle='--', label='x = 4.4')
 ax.axhline(y=1, color='green', linestyle='--', label='y = 1')
 
 timer_text = ax.text(0.02, 0.95, '', transform=ax.transAxes)
-
-def update(frame):
-    line.set_ydata(frames[frame])
-    time = (frame + 1) * dt  # Calculate current time
-    timer_text.set_text(f't = {time:.2f} anos')
-    return line, timer_text
 
 ani = FuncAnimation(fig, update, frames=len(frames), interval=50)
 

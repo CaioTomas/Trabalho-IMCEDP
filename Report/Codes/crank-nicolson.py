@@ -28,6 +28,49 @@ def initial_condition(t, x):
 def right_boundary_condition(t, x):
     return np.zeros_like(x)
 
+# solver do sistema linear, usando o algoritmo de Thomas
+def tdma_solver(a:np.ndarray, b:np.ndarray, c:np.ndarray, d:np.ndarray) -> np.ndarray:
+    """
+    Resolve um sistema de equações lineares tridiagonal usando o algoritmo de Thomas.
+
+    Argumentos:
+    a: array, coeficientes da diagonal inferior (comprimento Nx-1)
+    b: array, coeficientes da diagonal principal (comprimento N)
+    c: array, coeficientes da diagonal superior (comprimento N-1)
+    d: array, lado direito do sistema (comprimento N)
+
+    Retorna:
+    x: array, vetor solução de comprimento N
+    """
+
+    N = len(b)
+    c_linha = np.zeros(N - 1)
+    d_linha = np.zeros(N)
+
+    c_linha[0] = c[0] / b[0]
+    d_linha[0] = d[0] / b[0]
+
+    for i in range(1, N - 1):
+        c_linha[i] = c[i] / (b[i] - a[i - 1] * c_linha[i - 1])
+    for i in range(1, N):
+        d_linha[i] = (d[i] - a[i - 1] * d_linha[i - 1]) / (b[i] - a[i - 1] * c_linha[i - 1])
+
+    # substituição de trás para frente (o terceiro -1 no argumento do range indica iteração com passo negativo: começamos em N-2 e vamos até 0)
+    x = np.zeros(N)
+    x[-1] = d_linha[-1]
+    for i in range(N - 2, -1, -1):
+        x[i] = d_linha[i] - c_linha[i] * x[i + 1]
+
+    return x
+
+# função para fazer a animação
+def update(frame):
+    line.set_ydata(frames[frame])
+    time = (frame + 1) * dt
+    timer_text.set_text(f't = {time:.2f} anos')
+    return line, timer_text
+
+
 # criação da malha espacial
 x_values = np.linspace(0, L, Nx+1)
 
@@ -40,11 +83,6 @@ specific_frames = []
 
 alpha = k * dt / (2 * dx**2)
 
-# contruindo matriz (tridiagonal) dos coeficientes
-A = np.diag(1 + 2 * alpha * np.ones(Nx-1)) + \
-    np.diag(-alpha * np.ones(Nx-2), k=1) + \
-    np.diag(-alpha * np.ones(Nx-2), k=-1)
-
 # aplicando o método de Crank-Nicolson
 for n in range(Nt):
     u_new = np.zeros_like(u)
@@ -53,21 +91,28 @@ for n in range(Nt):
     u_new[0] = f((n+1) * dt)
     u_new[-1] = right_boundary_condition((n+1) * dt, x_values)[-1]
 
-    # Update inner points using matrix inversion
-    u_interior = u[1:Nx]  # Interior points
+    # resolvendo o sistema com o algoritmo de Thomas
+    u_interior = u[1:Nx]
     b = u_interior + alpha * (u[2:Nx+1] - 2 * u_interior + u[:Nx-1])
     b[0] += alpha * f((n+1) * dt)
     b[-1] += alpha * right_boundary_condition((n+1) * dt, x_values)[1]
 
-    u_new[1:Nx] = np.linalg.solve(A, b)
+    lower_diag = np.full(Nx - 2, -alpha)
+    main_diag = np.full(Nx - 1, 1 + 2 * alpha)
+    upper_diag = np.full(Nx - 2, -alpha)
 
+    u_new[1:Nx] = tdma_solver(lower_diag, main_diag, upper_diag, b)
+
+    # salvando a solução para fazer a animação
     u = u_new.copy()
     frames.append(u.copy())
     
+    # salvando a solução para fazer a figura
     if (n * dt) in specific_times:
         print(n*dt)
         specific_frames.append(u.copy())
 
+# append para pegar a última iteração temporar (t=1)
 specific_frames.append(u.copy())
 
 # criando a animação
@@ -85,12 +130,6 @@ ax.axvline(x=4.4, color='red', linestyle='--', label='')
 ax.axhline(y=1, color='green', linestyle='--', label='')
 
 timer_text = ax.text(0.02, 0.95, '', transform=ax.transAxes)
-
-def update(frame):
-    line.set_ydata(frames[frame])
-    time = (frame + 1) * dt  # Calculate current time
-    timer_text.set_text(f't = {time:.2f} anos')
-    return line, timer_text
 
 ani = FuncAnimation(fig, update, frames=len(frames), interval=50)
 
