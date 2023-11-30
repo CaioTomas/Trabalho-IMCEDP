@@ -6,17 +6,9 @@ program exp_euler
     double precision :: mu, dx, dt, q1, kappa, length, T
     integer :: l, n, d, Nfim
 
-    ! mu = 0.5d0
-
     q1 = 0.71d0
     kappa = 6.3d0
     length = kappa**0.5d0
-
-    ! dx = (1.d0/2.d0)**5
-    ! d = int(10.d0/(length*dx)) - 1
-
-    ! dt = mu * dx * dx
-    ! Nfim = int(1.d0/dt)
 
     length = 15.d0
     T = 1.d0
