@@ -5,11 +5,11 @@ from matplotlib.animation import FuncAnimation
 plt.rcParams['text.usetex'] = True
 
 # parâmetros
-k = 6.3  # difusividade térmica (m^2/year)
-L = 15.0  # profundidade máxima na integração
-T = 1.0  # tempo total de integração (em anos)
-Nx = 150  # quantidade de pontos espaciais
-Nt = 1260 #200  # quantidade de timesteps
+k = 6.3     # difusividade térmica (m^2/year)
+L = 15.0    # profundidade máxima na integração
+T = 1.0     # tempo total de integração (em anos)
+Nx = 150    # quantidade de pontos espaciais
+Nt = 1260   # quantidade de timesteps
 dx = L / Nx
 dt = T / Nt
 
