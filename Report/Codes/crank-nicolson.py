@@ -14,7 +14,7 @@ Nt = 1260   # quantidade de timesteps
 dx = L / Nx
 dt = T / Nt
 
-# condição inicial (começando com inverno)
+# condições de contorno (começando com inverno)
 def f(t):
     if (0 <= t <= 0.5):
         f = 1
@@ -22,12 +22,12 @@ def f(t):
         f = 10
     return f
 
-# condições de contorno
-def initial_condition(t, x):
-    return f(t) * np.exp(-0.71 * x)
-
 def right_boundary_condition(t, x):
     return np.zeros_like(x)
+
+# condição inicial
+def initial_condition(t, x):
+    return f(t) * np.exp(-0.71 * x)
 
 # solver do sistema linear, usando o algoritmo de Thomas
 def tdma_solver(a:np.ndarray, b:np.ndarray, c:np.ndarray, d:np.ndarray) -> np.ndarray:

@@ -20,8 +20,8 @@ program exp_euler
 
     length = 15.d0
     T = 1.d0
-    d = 1500 !1500 !600 !300 !150
-    Nfim = int(100*1260) !int(100*1260) !int(16*1260) !int(4*1260) !1260
+    d = 150 !1500 !600 !300 !150
+    Nfim = 1260 !int(100*1260) !int(16*1260) !int(4*1260) !1260
     dx = length / d
     dt = T / Nfim
 
@@ -47,21 +47,23 @@ program exp_euler
         end do
     end do
 
-    ! open(unit=123, file='exp-euler.dat', status='unknown')
+    open(unit=123, file='exp-euler.dat', status='unknown')
 
-    ! do n = 0,Nfim
-    !     do l = 0,d+1
-    !         write(123,*) n, l*dx, u(l,n)
-    !     end do
-    !     write(123,*) '   ' !! empty line between blocks for gnuplot plotting
-    ! end do
+    do n = 0,Nfim
+        do l = 0,d+1
+            write(123,*) n, l*dx, u(l,n)
+        end do
+        write(123,*) '   ' !! empty line between blocks for gnuplot plotting
+    end do
 
-    ! close(unit=123)
+    close(unit=123)
 
+    !! esse trecho foi usado apenas para o cálculo da ordem
+    !! recomendo comentar a escrita no arquivo antes de executar
     ! write(*,*) dx, 50*dx, Nfim, Nfim*dt, u(50, Nfim)
     ! write(*,*) dx, 100*dx, Nfim, Nfim*dt, u(100, Nfim)
     ! write(*,*) dx, 200*dx, Nfim, Nfim*dt, u(200, Nfim)
-    write(*,*) dx, 500*dx, Nfim, Nfim*dt, u(500, Nfim)
+    ! write(*,*) dx, 500*dx, Nfim, Nfim*dt, u(500, Nfim)
 
     deallocate(u)
 
