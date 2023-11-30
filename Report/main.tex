@@ -370,7 +370,7 @@
 		de $4.4$m a temperatura tem fase oposta à da superfície.}
 	\end{figure}
 	%
-	A Figura~\ref{fig:exp-euler} exibe o perfil de temperatura em diferentes instantes
+	A Figura 1 exibe o perfil de temperatura em diferentes instantes
 	obtidos pelo método de Euler.
 	Podemos ver uma mudança abrupta em $t=0.5$, causada pela mudança na condição de contorno
 	à esquerda (superfície) de inverno para verão. Na figura também são exibidas as retas 
@@ -395,7 +395,7 @@
 	para 4 valores de $\Delta x$: $\Delta x_1 = 0.1$, $\Delta x_2 = 0.05$, $\Delta x_3 = 0.025$
 	e $\Delta x_4 = 0.01$. 0 erro foi calculado como $|\Delta x_i - \Delta x_4|$, com $1 \leq i \leq 4$.
 	O fit realizado foi do tipo $f(x) = ax^2$ e o erro encontrado no ajuste foi de $0.8727\%$.
-	Isto valida a ordem 2 do método.
+	Isto valida a ordem 2 do método, como mostra a Figura 2.
 	
 	Também resolvemos o problema usando o método de Crank-Nicolson. Mantemos as mesmas
 	escolhas de intervalos, discretização e passos de tempo por simplicidade, mas a estabilidade
@@ -415,7 +415,7 @@
 	A implicitude deste método nos obriga a resolver um sistema linear a cada iteração temporal.
 	Para tanto, utilizamos o algoritmo de Thomas, próprio para resolver sistemas lineares tridiagonais.
 	
-	A Figura~\ref{fig:crank-nicolson} exibe o perfil de temperatura em diferentes instantes
+	A Figura 3 exibe o perfil de temperatura em diferentes instantes
 	obtidos pelo método de Crank-Nicolson.
 	Assim como foi o caso para o método de Euler, podemos ver uma mudança abrupta em $t=0.5$,
 	causada pela mudança na condição de contorno
@@ -464,7 +464,7 @@
 		e $x^{\alpha=2} \approx 13.4$m.}
 	\end{figure}
 	%
-	A Figura~\ref{fig:FVM} traz os perfis de temperatura para $\alpha=1$ (azul)
+	A Figura 4 traz os perfis de temperatura para $\alpha=1$ (azul)
 	e $\alpha = 2$ (laranja) ao final de 1 ano. A reta verde pontilhada marca a temperatura da superfície no inverno.
 	Vemos que a profundidade ideal para a adega aumenta, indo para $x^{\alpha=1} \approx 5.4$m
 	e $x^{\alpha=2} \approx 13.4$m.
