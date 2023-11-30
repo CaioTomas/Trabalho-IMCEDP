@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -31,7 +32,7 @@ def right_boundary_condition(t, x):
 # função para fazer a animação
 def update(frame):
     line.set_ydata(frames[frame])
-    time = (frame + 1) * dt  # Calculate current time
+    time = (frame + 1) * dt
     timer_text.set_text(f't = {time:.2f} anos')
     return line, timer_text
 
@@ -44,6 +45,8 @@ frames = []
 
 specific_times = [0, 0.25, 0.5, 0.75, 1.0]
 specific_frames = []
+
+time_values = []
 
 # aplicando o esquema de Euler explícito
 for n in range(Nt):
@@ -59,6 +62,7 @@ for n in range(Nt):
     # salvando a solução para fazer a animação
     u = u_new.copy()
     frames.append(u.copy())
+    time_values.append(n*dt)
     
     # salvando a solução para fazer a figura
     if (n * dt) in specific_times:
@@ -104,3 +108,9 @@ plt.legend()
 plt.grid(True)
 
 plt.savefig('exp-euler.pdf', bbox_inches='tight')
+
+with open('exp-euler.csv', mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['tempo', 'temperatura'])
+    for time, frame in zip(time_values, frames):
+        writer.writerow([time] + frame.tolist())

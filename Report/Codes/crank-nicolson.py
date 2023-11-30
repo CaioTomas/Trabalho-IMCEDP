@@ -1,3 +1,4 @@
+import csv
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -83,6 +84,8 @@ specific_frames = []
 
 alpha = k * dt / (2 * dx**2)
 
+time_values = []
+
 # aplicando o método de Crank-Nicolson
 for n in range(Nt):
     u_new = np.zeros_like(u)
@@ -106,6 +109,7 @@ for n in range(Nt):
     # salvando a solução para fazer a animação
     u = u_new.copy()
     frames.append(u.copy())
+    time_values.append(n*dt)
     
     # salvando a solução para fazer a figura
     if (n * dt) in specific_times:
@@ -151,3 +155,9 @@ plt.legend()
 plt.grid(True)
 
 plt.savefig('crank-nicolson.pdf', bbox_inches='tight')
+
+with open('crank-nicolson.csv', mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['tempo', 'temperatura'])
+    for time, frame in zip(time_values, frames):
+        writer.writerow([time] + frame.tolist())
