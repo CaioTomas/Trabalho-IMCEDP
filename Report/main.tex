@@ -195,7 +195,9 @@
 	explícito (e mostrar sua ordem) quanto o método de Crank-Nicolson, encontrar
 	a profundidade ideal para uma adega de vinhos e resolver uma variação
 	do problema com difusividade variável.
-
+%
+\section{Uma análise teórica}
+%
 	Antes de partir para a solução numérica, vamos fazer algumas considerações sobre
 	a solução analítica do problema. Primeiro, note que podemos escrever
 	%
@@ -291,32 +293,50 @@
 	a temperatura é de verão então à profundidade $x_1$ a temperatura é de inverno.
 	Além disso, a variação de temperatura é $\e^{-\pi} \approx 4\%$ da variação na superfície.
 	Isto torna esta profundidade ideal para uma adega de vinhos!
+%
+\section{Métodos numéricos}
+%
 
-
+	Começamos resolvendo a equação com o método de Euler explícito,
 	%
-	\section{Métodos numéricos}
+	\begin{equation}
+		u^{n+1}_{\ell} = u^{n}_{\ell} + \mu( u^{n}_{\ell + 1} - 2u^{n}_{\ell} + u^{n}_{\ell - 1} ),
+	\end{equation}
 	%
+	que converge
+	para $\kappa\mu \leq 1/2$. Por conta desta restrição ao número de Courant,
+	não podemos escolher $\Delta t$ e $\Delta x$ de forma displicente.
 
-		Começamos resolvendo a equação com o método de Euler explícito, que converge
-		para $\kappa\mu \leq 1/2$. Por conta desta restrição ao número de Courant,
-		não podemos escolher $\Delta t$ e $\Delta x$ de forma displicente.
+	Também utilizamos o método de Crank-Nicolson para resolver o problema.
+	Este método, dado por
+	%
+	\begin{equation}
+		\label{eq:crank-nicolson}
+		-\alpha u^{n+1}_{\ell + 1} + (1 + 2\alpha)u^{n+1}_{\ell} - \alpha u^{n+1}_{\ell - 1}
+		= \alpha u^{n}_{\ell + 1} + (1 - 2\alpha)u^{n}_{\ell} + \alpha u^{n}_{\ell - 1}
+	\end{equation}
+	%
+	com $\alpha = \kappa\mu/2$ é implícito, incondicionalmente estável e consistente
+	(logo convergente pelo Teorema de Equivalência de Lax).
+	Consequentemente, temos maior liberdade na escolha de $\Delta t$ e $\Delta x$, o que torna
+	este método mais indicado para o cômputo da solução por grandes intervalos de tempo.
+	A implicitude do método nos obriga a resolver um sistema linear a cada iteração.
+	Para tanto, usamos o \href{https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm}{algoritmo da matriz tridiagonal}
+	(ou de Thomas) para resolver o sistema.
+%
+\section{Resultados}
+%
+	blablabla
 
-		Também utilizamos o método de Crank-Nicolson para resolver o problema.
-		Este método, dado por
-		%
-		\begin{equation}
-			\label{eq:crank-nicolson}
-			-\alpha u^{n+1}_{\ell + 1} + (1 + 2\alpha)u^{n+1}_{\ell} - \alpha u^{n+1}_{\ell - 1}
-			= \alpha u^{n}_{\ell + 1} + (1 - 2\alpha)u^{n}_{\ell} + \alpha u^{n}_{\ell - 1}
-		\end{equation}
-		%
-		com $\alpha = \kappa\mu/2$ é implícito, incondicionalmente estável e consistente
-		(logo convergente pelo Teorema de Equivalência de Lax).
-		Consequentemente, temos maior liberdade na escolha de $\Delta t$ e $\Delta x$, o que torna
-		este método mais indicado para o cômputo da solução por grandes intervalos de tempo.
-		A implicitude do método nos obriga a resolver um sistema linear a cada iteração.
-		Para tanto, usamos o \href{https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm}{algoritmo da matriz tridiagonal}
-		(ou de Thomas) para resolver o sistema.
+	figura da solução em diferentes timesteps com Euler explícito (linkar animação)
+
+	plot da ordem
+
+	figura da solução em diferentes timesteps com Crank-Nicolson (linkar animação)
+
+
+
+
 
 %
 \section{Códigos utilizados}
