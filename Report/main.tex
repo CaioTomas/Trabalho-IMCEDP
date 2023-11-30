@@ -140,7 +140,7 @@
     de 2023 da Universidade de Brasília.
     O objetivo do trabalho foi resolver, numericamente, a equação do calor.
     Foi utilizada~\cite{lin1998} como referência principal para o trabalho, além
-    das notas de aula do curso.
+    das notas de aula do curso e do livro~\cite{Iserles}.
 \end{abstract}
 %
 \maketitle
@@ -354,13 +354,14 @@
 %
 \section{Resultados}
 %
-	blablabla
-
-	figura da solução em diferentes timesteps com Euler explícito (linkar animação)
+	Começamos resolvendo a equação utilizando o método de Euler explícito.
+	Tomamos um intervalo espacial de 0m a 15m e um intervalo temporal de 0 a 1 ano.
+	Os valores de $\Delta x$ e $\Delta t$ foram tomados de maneira que $\kappa\mu \leq 1/2$
+	para que o método convergisse.
 	%
 	\begin{figure}[t]%
 		\label{fig:exp-euler}
-		\includegraphics[width=.5\textwidth]{Codes/exp-euler.pdf}
+		\includegraphics[width=.45\textwidth]{Codes/exp-euler.pdf}
 		\caption{Perfil de temperatura para diferentes instantes de tempo calculado usando
 		o método de Euler explícito. A reta pontilhada
 		vermelha representa a profundidade $x = 4.4$m, enquanto a reta pontilhada verde
@@ -369,21 +370,40 @@
 		de $4.4$m a temperatura tem fase oposta à da superfície.}
 	\end{figure}
 	%
-
-	plot da ordem (referência $(t_r, x_r) = (1 \text{ ano}, 5 \text{ m})$)
-	%
-	\begin{figure}[b]%
-		\label{fig:ordem-exp-euler}
-		\includegraphics[width=.5\textwidth]{Codes/ordem-exp-euler.pdf}
-		\caption{Validação da ordem do método de Euler explícito. Fit da forma $f(x) = ax^2$. Erro encontrado de $0.8727\%$.}
-	\end{figure}
-	%
-
-	figura da solução em diferentes timesteps com Crank-Nicolson (linkar animação)
+	A Figura~\ref{fig:exp-euler} exibe o perfil de temperatura em diferentes instantes
+	obtidos pelo método de Euler.
+	Podemos ver uma mudança abrupta em $t=0.5$, causada pela mudança na condição de contorno
+	à esquerda (superfície) de inverno para verão. Na figura também são exibidas as retas 
+	$x=4.4$m (em vermelho) e $y=1$ (em verde). Observe que a curva roxa, correspondente
+	ao perfil de temperatura ao final de 1 ano, passa pelo encontro das retas, i.e.,
+	pelo ponto $(4.4, 1)$. Isso recupera o resultado obtido na análise teórica de que
+	à profundidade $4.4$m a temperatura tem fase oposta à temperatura da superfície
+	(e, consequentemente, é inverno a essa temperatura enquanto é verão na superfície).
+	
+	Um vídeo mostrando a evolução do perfil de temperatura pode ser encontrado
+	\href{https://github.com/CaioTomas/Trabalho-IMCEDP/blob/main/Report/Codes/exp-euler.mp4}{neste link}.
 	%
 	\begin{figure}[t]%
+		\label{fig:ordem-exp-euler}
+		\includegraphics[width=.45\textwidth]{Codes/ordem-exp-euler.pdf}
+		\caption{Validação da ordem do método de Euler explícito. Fit da forma $f(x) = ax^2$.
+		Erro encontrado de $0.8727\%$.}
+	\end{figure}
+	%
+	Para validar a ordem deste esquema, tomamos como referência o ponto
+	$(t_r, x_r) = (1 \text{ ano}, 5 \text{ m})$. Calculamos $T(t_r, x_r)$
+	para 4 valores de $\Delta x$: $\Delta x_1 = 0.1$, $\Delta x_2 = 0.05$, $\Delta x_3 = 0.025$
+	e $\Delta x_4 = 0.01$. 0 erro foi calculado como $|\Delta x_i - \Delta x_4|$, com $1 \leq i \leq 4$.
+	O fit realizado foi do tipo $f(x) = ax^2$ e o erro encontrado no ajuste foi de $0.8727\%$.
+	Isto valida a ordem 2 do método.
+	
+	Também resolvemos o problema usando o método de Crank-Nicolson. Mantemos as mesmas
+	escolhas de intervalos, discretização e passos de tempo por simplicidade, mas a estabilidade
+	incondicional do método nos fornece uma margem de manobra maior para escolher estes parâmetros.
+	%
+	\begin{figure}[b]%
 		\label{fig:crank-nicolson}
-		\includegraphics[width=.5\textwidth]{Codes/crank-nicolson.pdf}
+		\includegraphics[width=.45\textwidth]{Codes/crank-nicolson.pdf}
 		\caption{Perfil de temperatura para diferentes instantes de tempo calculado usando
 		o método de Crank-Nicolson. A reta pontilhada
 		vermelha representa a profundidade $x = 4.4$m, enquanto a reta pontilhada verde
@@ -392,11 +412,62 @@
 		de $4.4$m a temperatura tem fase oposta à da superfície.}
 	\end{figure}
 	%
+	A implicitude deste método nos obriga a resolver um sistema linear a cada iteração temporal.
+	Para tanto, utilizamos o algoritmo de Thomas, próprio para resolver sistemas lineares tridiagonais.
+	
+	A Figura~\ref{fig:crank-nicolson} exibe o perfil de temperatura em diferentes instantes
+	obtidos pelo método de Crank-Nicolson.
+	Assim como foi o caso para o método de Euler, podemos ver uma mudança abrupta em $t=0.5$,
+	causada pela mudança na condição de contorno
+	à esquerda (superfície) de inverno para verão. Na figura também são exibidas as retas 
+	$x=4.4$m (em vermelho) e $y=1$ (em verde) e, assim como para o método de Euler, vemos
+	que o resultado obtido na análise teórica de que
+	à profundidade $4.4$m a temperatura tem fase oposta à temperatura da superfície
+	(e, consequentemente, é inverno a essa temperatura enquanto é verão na superfície)
+	é recuperado.
+	
+	Um vídeo mostrando a evolução do perfil de temperatura pode ser encontrado
+	\href{https://github.com/CaioTomas/Trabalho-IMCEDP/blob/main/Report/Codes/crank-nicolson.mp4}{neste link}.
 
+	Por fim, consideramos o problema
+	%
+	\begin{equation}
+		u_t = {\left( \kappa(x)u_x \right)}_x,
+	\end{equation}
+	%
+	com $\kappa(x) = {(6.3 + x)}^{\alpha}$ e sujeito às mesmas condições de contorno e condição inicial previamente citadas.
+	Dito de outro modo, vamos considerar que a difusividade aumenta com a profundidade
+	(quanto mais fundo, mais rapidamente o calor se difunde). Consideramos apenas os casos $\alpha = 1$ e $\alpha = 2$.
 
-
-
-
+	Para integrar esta equação, lançamos mão de um método de volumes finitos: para cada iteração na malha espacial,
+	tomamos
+	%
+	\begin{equation}
+		\overline{\kappa}_i = \frac{1}{2}\left( \kappa(x_{i}) + \kappa(x_{i-1}) \right)
+	\end{equation}
+	%
+	e aplicamos o método de Euler com $\overline{\kappa}_i$. Consideramos o mesmo domínio de antes: $0 \leq x \leq 15$ e $0 \leq t \leq 1$.
+	Para que o método convergisse, fixamos $\Delta x = 0.1$ e tomamos
+	$\Delta t$ suficientemente pequeno para que
+	%
+	\begin{equation}
+		\frac{\Delta t}{\Delta x^2} \leq \frac{1}{2\kappa_{\max}},
+	\end{equation}
+	%
+	com $\kappa_{\max} = {(6.3 + x_{\max})}^{\alpha} = 21.3^{\alpha}$.
+	%
+	\begin{figure}[t]%
+		\label{fig:FVM}
+		\includegraphics[width=.45\textwidth]{Codes/FVM.pdf}
+		\caption{Perfil de temperatura para $t=1$ considerando $\alpha = 1$ e $\alpha = 2$.
+		Vemos que a profundidade ideal para a adega aumenta, indo para $x^{\alpha=1} \approx 5.4$m
+		e $x^{\alpha=2} \approx 13.4$m.}
+	\end{figure}
+	%
+	A Figura~\ref{fig:FVM} traz os perfis de temperatura para $\alpha=1$ (azul)
+	e $\alpha = 2$ (laranja) ao final de 1 ano. A reta verde pontilhada marca a temperatura da superfície no inverno.
+	Vemos que a profundidade ideal para a adega aumenta, indo para $x^{\alpha=1} \approx 5.4$m
+	e $x^{\alpha=2} \approx 13.4$m.
 %
 \section{Códigos utilizados}
 %
@@ -407,6 +478,72 @@
 
 
 % \printbibliography
-\bibliography{Report/referencias}
+% \bibliography{Report/referencias}
+
+\begin{thebibliography}{9}
+	\bibitem{Iserles} Arieh Iserles, \textbf{Cambridge Texts in Applied Mathematics}: \textit{A First Course in the Numerical Analysis of Differential Equations}, 2nd edition (Cambridge University Press, 2008)
+	\bibitem{lin1998} C.C. Lin, L.A. Segel, \textbf{Classics in Applied Mathematics 1}: \textit{Mathematics Applied to Deterministic Problems in the Natural Sciences}, (Society for Industrial and Applied Mathematics, 1998)
+\end{thebibliography}
+
+\appendix
+
+%
+\section{O método de Thomas para solução de sistemas tridiagonais}
+%
+	Seja
+	%
+	\begin{equation}
+		\begin{bmatrix}
+			b_1 & c_1 &     &        &  \\
+			a_2 & b_2 & c_2 &        &  \\
+			    & a_3 & b_3 & \ddots &  \\
+			    &     & \ddots & \ddots & c_{n-1} \\
+			    &     &  & a_n & b_n 
+		\end{bmatrix}\begin{bmatrix}
+			x_1 \\
+			x_2 \\
+			x_3 \\
+			\vdots \\
+			x_n
+		\end{bmatrix} = \begin{bmatrix}
+			d_1 \\
+			d_2 \\
+			d_3 \\
+			\vdots \\
+			d_n
+		\end{bmatrix}
+	\end{equation}
+	%
+	um sistema linear tridiagonal. O método de Thomas é um método que resolve tais sistemas em $\mathcal{O}(n)$
+	operações\footnote{Compare com as $\mathcal{O}(n^3)$ operações necessárias para a eliminação gaussiana.},
+	realizando uma primeira varredura para eliminar os $a_i$'s seguida de uma substituição inversa.
+	Este algoritmo não é estável para o caso geral. Não obstante, o método de Crank-Nicolson nos dá $b_i = 1 + 2\alpha$,
+	$a_i = c_i = -\alpha$ e, neste caso, a matriz do sistema é estritamente diagonalmente dominante e o algoritmo é estável.
+
+	A primeira etapa do método consiste de uma varredura para o cômputo de novos coeficientes $c_i'$ e $d_i'$ dados por
+	%
+	\begin{equation}
+		c_i' = \begin{cases}
+			\displaystyle{\frac{c_i}{b_i}}, \ i = 1 \\
+			\displaystyle{\frac{c_i}{b_i - a_i c_{i-1}'}}, \ 2 \leq i \leq n-1
+		\end{cases}
+	\end{equation}
+	%
+	e
+	%
+	\begin{equation}
+		d_i' = \begin{cases}
+			\displaystyle{\frac{d_i}{b_i}}, \ i = 1 \\
+			\displaystyle{\frac{d_i - a_i d_{i-1}'}{b_i - a_i c_{i-1}'}}, \ 2 \leq i \leq n
+		\end{cases}
+	\end{equation}
+	%
+	Calculados os novos coeficientes, a solução é dada por
+	%
+	\begin{align*}
+		x_n &= d_n' \\
+		x_i &= d_i' - c_i' x_{i+1}, \ i = n-1, n-2, \dots, 1.
+	\end{align*}
+	%
 
 \end{document}
