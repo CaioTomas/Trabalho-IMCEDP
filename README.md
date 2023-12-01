@@ -1,3 +1,18 @@
+# A equação do calor e o problema da adega
+------------------------------------------
+
+Este repositório armazena o trabalho final do curso de Introdução a
+Métodos Computacionais em Equações Diferenciais Parciais (IMCEDP) do
+Programa de Pós-Graduação em Matemática (PPGMAT),
+ministrado pelo prof. Dr. Yuri Dumaresq Sobral no segundo semestre letivo
+de 2023 da Universidade de Brasília.
+O objetivo do trabalho foi resolver, numericamente, a equação do calor.
+
+Resolvemos a equação do calor usando os métodos de Euler explícito
+e de Crank-Nicolson. Os algoritmos estão implementados em Python
+e Fortran (para a validação da ordem do algoritmo de ordem).
+Abaixo seguem instruções de compilação/execução dos scripts.
+
 ### Instalação das bibliotecas necessárias
 ------------------------------------
 Antes de executar um código Python, garanta
