@@ -55,3 +55,13 @@ Caso queira, você pode compilar o(s) arquivo(s)
 arquivo estiver.
 
     ./build.sh <arquivo>.tex
+
+### Rotinas
+------------------------------------------------
+O arquivo `exp-euler.py` contém a solução do problema, para
+$\kappa$ constante, usando o método de Euler explícito. Analogamente
+para o arquivo `crank-nicolson.py`. O arquivo `exp-euler.f90` traz
+a validação (manual) da ordem do método de Euler explícito, que é
+traçada usando a rotina `exp-euler.gnu`. Por fim, a rotina `FVM.py`
+traz a solução do problema para $\kappa(x) = (6.3 + x)^{\alpha}$,
+com $\alpha = 1,2$, usando um método de volumes finitos.
